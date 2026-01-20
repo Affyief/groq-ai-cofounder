@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Co-Founder - Startup Idea Validator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #eff6ff, #ffffff, #faf5ff);
+            min-height: 100vh;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #0ea5e9, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #0ea5e9;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold gradient-text">AI Co-Founder</h1>
+                    <p class="mt-1 text-gray-600">Your AI-powered startup idea validator (Demo)</p>
+                </div>
+                <button id="newIdeaBtn" class="hidden px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                    + New Idea
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Error Display -->
+        <div id="errorDiv" class="hidden mb-8 max-w-4xl mx-auto">
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p class="text-red-800" id="errorText"></p>
+            </div>
+        </div>
+
+        <!-- Form View -->
+        <div id="formView">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Validate Your Startup Idea</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Get instant AI-powered insights, market analysis, and recommendations to help you decide if your idea is worth pursuing.
+                </p>
+                <p class="text-sm text-yellow-600 mt-4 font-semibold">⚠️ Demo Mode: This is a static demo with sample data</p>
+            </div>
+
+            <div class="w-full max-w-4xl mx-auto">
+                <form id="ideaForm" class="space-y-6">
+                    <div>
+                        <label for="idea" class="block text-lg font-semibold text-gray-900 mb-3">Describe Your Startup Idea</label>
+                        <textarea
+                            id="idea"
+                            rows="6"
+                            class="w-full px-4 py-3 text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                            placeholder="Example: A mobile app that connects freelance graphic designers with small businesses needing quick logo designs..."
+                        ></textarea>
+                        <p id="errorMsg" class="hidden mt-2 text-sm text-red-600"></p>
+                    </div>
+                    <div class="flex justify-center">
+                        <button
+                            type="submit"
+                            id="submitBtn"
+                            class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                        >
+                            Validate My Idea
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Report View -->
+        <div id="reportView" class="hidden w-full max-w-5xl mx-auto space-y-8"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-600">Powered by GROQ AI • Built with React & TailwindCSS • Demo Version</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mock validation data
+        const mockReport = {
+            reportId: 'demo-report-123',
+            idea: '',
+            validationReport: {
+                recommendation: 'GO',
+                summary: 'This is a strong idea with significant market potential. The direct connection model eliminates inefficiencies and creates value for both sides of the marketplace.',
+                targetAudience: 'Small to medium-sized businesses (1-50 employees) that need occasional design work but cannot justify hiring a full-time designer. Also appeals to startups and entrepreneurs launching new ventures who need quick, affordable branding solutions.',
+                firstCustomers: 'Tech startups in accelerator programs, small e-commerce businesses launching on platforms like Shopify, local service businesses updating their brand, and solo entrepreneurs starting side projects.',
+                risks: [
+                    'Quality control challenges with freelance designers',
+                    'Price competition from established platforms like Fiverr and 99designs',
+                    'Building trust between businesses and freelancers',
+                    'Managing delivery timelines and revisions',
+                    'Potential legal issues with intellectual property rights'
+                ],
+                opportunities: [
+                    'Growing gig economy and demand for flexible work',
+                    'Small businesses increasingly need professional branding',
+                    'Niche specialization potential (e.g., logo design only)',
+                    'Subscription model for ongoing design needs',
+                    'AI-assisted design matching and quality checks'
+                ],
+                marketInsights: 'The freelance design market is valued at over $5 billion and growing at 8% annually. With remote work normalization, businesses are more comfortable hiring freelancers. The logo design segment alone is worth $1.2 billion. However, the market is competitive with established players like Fiverr, 99designs, and Upwork.',
+                competitorAnalysis: 'Main competitors include Fiverr (broad marketplace), 99designs (design-focused with contests), Upwork (professional freelancers), and Designhill. Most platforms struggle with quality consistency and matching. Opportunity exists for a curated, vetted platform focused specifically on quick-turnaround logo design.',
+                recommendedNextSteps: [
+                    'Interview 20-30 small business owners about their logo design pain points',
+                    'Build relationships with 10-15 high-quality freelance designers',
+                    'Create an MVP focusing on logo design only',
+                    'Develop a vetting process and quality standards for designers',
+                    'Test with 50 early adopter businesses and iterate based on feedback'
+                ]
+            },
+            createdAt: new Date().toISOString()
+        };
+
+        const ideaForm = document.getElementById('ideaForm');
+        const ideaInput = document.getElementById('idea');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const errorDiv = document.getElementById('errorDiv');
+        const errorText = document.getElementById('errorText');
+        const formView = document.getElementById('formView');
+        const reportView = document.getElementById('reportView');
+        const newIdeaBtn = document.getElementById('newIdeaBtn');
+
+        ideaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            errorMsg.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+
+            const idea = ideaInput.value.trim();
+            
+            if (!idea) {
+                showError('Please enter your startup idea', errorMsg);
+                return;
+            }
+
+            if (idea.length < 10) {
+                showError('Please provide more details about your idea (at least 10 characters)', errorMsg);
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="flex items-center"><span class="spinner mr-3"></span>Validating...</span>';
+
+            // Simulate API call
+            setTimeout(() => {
+                mockReport.idea = idea;
+                displayReport(mockReport);
+            }, 2000);
+        });
+
+        newIdeaBtn.addEventListener('click', function() {
+            formView.classList.remove('hidden');
+            reportView.classList.add('hidden');
+            newIdeaBtn.classList.add('hidden');
+            ideaInput.value = '';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Validate My Idea';
+        });
+
+        function showError(message, element) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+        }
+
+        function displayReport(report) {
+            formView.classList.add('hidden');
+            newIdeaBtn.classList.remove('hidden');
+
+            const { idea, validationReport, createdAt } = report;
+            const {
+                recommendation,
+                summary,
+                targetAudience,
+                firstCustomers,
+                risks,
+                opportunities,
+                marketInsights,
+                competitorAnalysis,
+                recommendedNextSteps
+            } = validationReport;
+
+            const recommendationColors = {
+                'GO': 'bg-green-100 text-green-800 border-green-300',
+                'NO-GO': 'bg-red-100 text-red-800 border-red-300',
+                'PROCEED WITH CAUTION': 'bg-yellow-100 text-yellow-800 border-yellow-300'
+            };
+
+            const recommendationIcons = {
+                'GO': '✓',
+                'NO-GO': '✗',
+                'PROCEED WITH CAUTION': '⚠'
+            };
+
+            const formatDate = (dateString) => {
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            };
+
+            reportView.innerHTML = `
+                <!-- Header Card -->
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-3xl font-bold text-gray-900">Validation Report</h2>
+                        <span class="text-sm text-gray-500">${formatDate(createdAt)}</span>
+                    </div>
+                    <div class="inline-flex items-center px-6 py-3 rounded-full border-2 font-bold text-lg ${recommendationColors[recommendation]}">
+                        ${recommendationIcons[recommendation]} ${recommendation}
+                    </div>
+                </div>
+
+                <!-- Your Idea -->
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Your Idea</h3>
+                    <p class="text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg italic">"${idea}"</p>
+                </div>
+
+                ${summary ? `
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Executive Summary</h3>
+                    <p class="text-gray-700 leading-relaxed">${summary}</p>
+                </div>
+                ` : ''}
+
+                ${targetAudience ? `
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">🎯 Target Audience</h3>
+                    <p class="text-gray-700 leading-relaxed">${targetAudience}</p>
+                </div>
+                ` : ''}
+
+                ${firstCustomers ? `
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">👥 First Potential Customers</h3>
+                    <p class="text-gray-700 leading-relaxed">${firstCustomers}</p>
+                </div>
+                ` : ''}
+
+                <!-- Risks and Opportunities -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    ${risks && risks.length > 0 ? `
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">⚠️ Key Risks</h3>
+                        <ul class="space-y-3">
+                            ${risks.map(risk => `
+                                <li class="flex items-start">
+                                    <span class="text-red-500 mr-2 mt-1">•</span>
+                                    <span class="text-gray-700 leading-relaxed">${risk}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+
+                    ${opportunities && opportunities.length > 0 ? `
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">🚀 Key Opportunities</h3>
+                        <ul class="space-y-3">
+                            ${opportunities.map(opp => `
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2 mt-1">•</span>
+                                    <span class="text-gray-700 leading-relaxed">${opp}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                </div>
+
+                ${marketInsights ? `
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">📊 Market Insights</h3>
+                    <p class="text-gray-700 leading-relaxed">${marketInsights}</p>
+                </div>
+                ` : ''}
+
+                ${competitorAnalysis ? `
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">🔍 Competitor Analysis</h3>
+                    <p class="text-gray-700 leading-relaxed">${competitorAnalysis}</p>
+                </div>
+                ` : ''}
+
+                ${recommendedNextSteps && recommendedNextSteps.length > 0 ? `
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">✅ Recommended Next Steps</h3>
+                    <ol class="space-y-3">
+                        ${recommendedNextSteps.map((step, index) => `
+                            <li class="flex items-start">
+                                <span class="text-blue-600 font-semibold mr-3">${index + 1}.</span>
+                                <span class="text-gray-700 leading-relaxed">${step}</span>
+                            </li>
+                        `).join('')}
+                    </ol>
+                </div>
+                ` : ''}
+            `;
+
+            reportView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
