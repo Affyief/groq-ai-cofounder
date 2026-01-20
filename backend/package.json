@@ -1,0 +1,24 @@
+{
+  "name": "ai-cofounder-backend",
+  "version": "1.0.0",
+  "description": "Backend API for AI Co-Founder startup idea validator",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["ai", "groq", "startup", "validator"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.3",
+    "groq-sdk": "^0.3.2",
+    "express-session": "^1.17.3",
+    "connect-mongo": "^5.1.0",
+    "uuid": "^9.0.1"
+  }
+}
